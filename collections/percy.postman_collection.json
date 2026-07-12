@@ -1,0 +1,201 @@
+{
+  "info": {
+    "name": "Percy REST API",
+    "description": "Documented Percy REST API (part of BrowserStack) for reading and managing Projects, Builds, and Snapshots, plus Visual Git (branchline) sync and merge. Base URL: https://percy.io/api/v1. Read operations use a per-project token (Authorization: Token token=<PROJECT_TOKEN>); review and write operations use BrowserStack HTTP Basic auth (username:accesskey). Snapshot capture/upload is handled by the open-source Percy CLI/SDK, not a public REST endpoint.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      { "key": "key", "value": "Authorization", "type": "string" },
+      { "key": "value", "value": "Token token={{projectToken}}", "type": "string" },
+      { "key": "in", "value": "header", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://percy.io/api/v1", "type": "string" },
+    { "key": "projectToken", "value": "", "type": "string" },
+    { "key": "bstackUsername", "value": "", "type": "string" },
+    { "key": "bstackAccessKey", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "Get project details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/projects", "host": ["{{baseUrl}}"], "path": ["projects"] },
+            "description": "Retrieves the details of the project associated with the given project token."
+          }
+        },
+        {
+          "name": "Create a project",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "{{bstackUsername}}", "type": "string" },
+                { "key": "password", "value": "{{bstackAccessKey}}", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"data\": {\n    \"type\": \"projects\",\n    \"attributes\": {\n      \"name\": \"my-project\",\n      \"type\": \"web\"\n    }\n  }\n}" },
+            "url": { "raw": "{{baseUrl}}/projects", "host": ["{{baseUrl}}"], "path": ["projects"] },
+            "description": "Creates a web or app project. Uses BrowserStack HTTP Basic auth."
+          }
+        },
+        {
+          "name": "Update project settings",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "{{bstackUsername}}", "type": "string" },
+                { "key": "password", "value": "{{bstackAccessKey}}", "type": "string" }
+              ]
+            },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"data\": {\n    \"attributes\": {}\n  }\n}" },
+            "url": { "raw": "{{baseUrl}}/projects/:id", "host": ["{{baseUrl}}"], "path": ["projects", ":id"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "Updates one or more settings on an existing project (slug or numeric ID). Uses BrowserStack HTTP Basic auth."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Builds",
+      "item": [
+        {
+          "name": "List recent builds",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/builds?page[limit]=30", "host": ["{{baseUrl}}"], "path": ["builds"], "query": [{ "key": "page[limit]", "value": "30" }] },
+            "description": "Lists builds from the last 30 days. Filters: filter[sha], filter[branch], filter[state]."
+          }
+        },
+        {
+          "name": "Get build details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/builds/:build_id?include=build-summary", "host": ["{{baseUrl}}"], "path": ["builds", ":build_id"], "query": [{ "key": "include", "value": "build-summary" }], "variable": [{ "key": "build_id", "value": "" }] },
+            "description": "Fetches a single build's details."
+          }
+        },
+        {
+          "name": "Review a build (approve/unapprove/reject)",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "{{bstackUsername}}", "type": "string" },
+                { "key": "password", "value": "{{bstackAccessKey}}", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"data\": {\n    \"type\": \"reviews\",\n    \"attributes\": { \"action\": \"approve\" },\n    \"relationships\": {\n      \"build\": { \"data\": { \"type\": \"builds\", \"id\": \"\" } }\n    }\n  }\n}" },
+            "url": { "raw": "{{baseUrl}}/reviews", "host": ["{{baseUrl}}"], "path": ["reviews"] },
+            "description": "Approve, unapprove, or reject a build. Uses BrowserStack HTTP Basic auth."
+          }
+        },
+        {
+          "name": "Fail a build",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "{{bstackUsername}}", "type": "string" },
+                { "key": "password", "value": "{{bstackAccessKey}}", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"manually-failed-reason\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/builds/:build_id/fail", "host": ["{{baseUrl}}"], "path": ["builds", ":build_id", "fail"], "variable": [{ "key": "build_id", "value": "" }] },
+            "description": "Manually marks a build as failed with a reason. Uses BrowserStack HTTP Basic auth."
+          }
+        },
+        {
+          "name": "Delete a build",
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                { "key": "username", "value": "{{bstackUsername}}", "type": "string" },
+                { "key": "password", "value": "{{bstackAccessKey}}", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/builds/:build_id/delete", "host": ["{{baseUrl}}"], "path": ["builds", ":build_id", "delete"], "variable": [{ "key": "build_id", "value": "" }] },
+            "description": "Permanently removes a build. Uses BrowserStack HTTP Basic auth."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Snapshots",
+      "item": [
+        {
+          "name": "List snapshots for a build",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/snapshots?build_id=", "host": ["{{baseUrl}}"], "path": ["snapshots"], "query": [{ "key": "build_id", "value": "" }] },
+            "description": "Lists the snapshots that make up a build (build_id required)."
+          }
+        },
+        {
+          "name": "Get snapshot details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/snapshots/:snapshot_id", "host": ["{{baseUrl}}"], "path": ["snapshots", ":snapshot_id"], "variable": [{ "key": "snapshot_id", "value": "" }] },
+            "description": "Fetches a single snapshot's details, including review state and comparisons."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Visual Git",
+      "item": [
+        {
+          "name": "Sync snapshots to a branchline",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"project_id\": \"\",\n  \"target_branch_filter\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/branchline/sync", "host": ["{{baseUrl}}"], "path": ["branchline", "sync"] },
+            "description": "Syncs a project's snapshots with the branch in target_branch_filter."
+          }
+        },
+        {
+          "name": "Check sync status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/branchline/sync/:sync_id", "host": ["{{baseUrl}}"], "path": ["branchline", "sync", ":sync_id"], "variable": [{ "key": "sync_id", "value": "" }] },
+            "description": "Retrieves the status of a branchline sync operation."
+          }
+        },
+        {
+          "name": "Merge snapshots into master branchline",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"data\": {\n    \"type\": \"branchline-merges\",\n    \"relationships\": {\n      \"build\": { \"data\": { \"type\": \"builds\", \"id\": \"\" } }\n    }\n  }\n}" },
+            "url": { "raw": "{{baseUrl}}/branchline/merge", "host": ["{{baseUrl}}"], "path": ["branchline", "merge"] },
+            "description": "Merges approved snapshots from a feature branch into the master branchline."
+          }
+        }
+      ]
+    }
+  ]
+}

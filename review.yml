@@ -1,0 +1,92 @@
+aid: percy
+name: Percy
+review:
+  question: Does Percy expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-11'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. Percy's documented public API surface (the
+    REST API under https://percy.io/api/v1 for Projects, Builds, Snapshots, and
+    Visual Git) is request/response REST over HTTPS - there is no server-push
+    transport (WebSocket or SSE) on Percy's own public API to model. Percy's
+    dashboard uses realtime updates internally, but no public realtime endpoint is
+    documented.
+findings:
+  summary: |
+    Percy does not publish a documented public WebSocket API. Percy is a visual
+    testing and review platform, part of BrowserStack. Its documented public API is
+    a REST API under https://percy.io/api/v1 covering Projects, Builds, and
+    Snapshots, plus Visual Git (branchline) sync and merge. Read operations
+    authenticate with a per-project token passed as
+    `Authorization: Token token=<PROJECT_TOKEN>`; review and write operations
+    (approve/reject/fail/delete a build, create/update a project) use BrowserStack
+    HTTP Basic auth (username:accesskey). All documented endpoints are HTTPS
+    request/response REST. No realtime, bidirectional, or streaming WebSocket
+    (ws:// or wss://) endpoint is documented on Percy's public API.
+  accessModel: |
+    The snapshot capture and upload path - the mechanism that actually creates
+    snapshots during a build - is driven by the open-source Percy CLI and SDKs
+    (@percy/cli, @percy/core, @percy/client) using the project token, not by a
+    public REST "create snapshot" endpoint. The public REST reference documents
+    reading/managing the resulting Projects, Builds, and Snapshots and does not
+    expose a public snapshot-upload endpoint. This entry models only the documented
+    public REST surface and honestly flags the CLI/SDK-internal upload path.
+  ownership: |
+    Percy was acquired by BrowserStack in 2020 and is now offered as
+    "Percy by BrowserStack." Documentation lives under browserstack.com/docs/percy,
+    the API host remains percy.io (https://percy.io/api/v1), and account-level
+    write auth uses BrowserStack credentials.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://percy.io/api/v1
+      documented: true
+      note: Projects, Builds, Snapshots, and Visual Git. Request/response over HTTPS.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented anywhere in Percy's API reference as of the review date.
+  endpointsConfirmedRest:
+    - GET   https://percy.io/api/v1/projects
+    - POST  https://percy.io/api/v1/projects
+    - PATCH https://percy.io/api/v1/projects/{id}
+    - GET   https://percy.io/api/v1/builds
+    - GET   https://percy.io/api/v1/builds/{build_id}
+    - POST  https://percy.io/api/v1/builds/{build_id}/fail
+    - POST  https://percy.io/api/v1/builds/{build_id}/delete
+    - POST  https://percy.io/api/v1/reviews
+    - GET   https://percy.io/api/v1/snapshots
+    - GET   https://percy.io/api/v1/snapshots/{snapshot_id}
+    - POST  https://percy.io/api/v1/branchline/sync
+    - GET   https://percy.io/api/v1/branchline/sync/{sync_id}
+    - POST  https://percy.io/api/v1/branchline/merge
+sources:
+  - url: https://www.browserstack.com/docs/percy/api-reference/percy-apis
+    type: Documentation
+    note: Overview of the Percy REST API - Projects, Builds, Snapshots, Visual Git, Visual Scanner. All REST; no WebSocket mentioned.
+  - url: https://www.browserstack.com/docs/percy/api-reference/builds
+    type: APIReference
+    note: Builds - list (GET /api/v1/builds), get (GET /api/v1/builds/{id}), review (POST /api/v1/reviews), fail, delete. Token auth for reads, Basic auth for writes.
+  - url: https://www.browserstack.com/docs/percy/api-reference/snapshots
+    type: APIReference
+    note: Snapshots - list for a build (GET /api/v1/snapshots?build_id=), get (GET /api/v1/snapshots/{id}). Token auth. Read-only in the public reference.
+  - url: https://www.browserstack.com/docs/percy/api-reference/projects
+    type: APIReference
+    note: Projects - get (GET /api/v1/projects) with token auth; create (POST) and update (PATCH /api/v1/projects/{id}) with Basic auth.
+  - url: https://www.browserstack.com/docs/percy/api-reference/visual-git
+    type: APIReference
+    note: Visual Git branchline - sync (POST /api/v1/branchline/sync), status (GET /api/v1/branchline/sync/{sync_id}), merge (POST /api/v1/branchline/merge). Token auth.
+  - url: https://github.com/percy/cli
+    type: SourceCode
+    note: Open-source Percy CLI/SDK that captures and uploads snapshots during a build using PERCY_TOKEN. This upload path is not part of the public REST reference.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. Percy's documented public API is
+    request/response REST over HTTPS (Projects, Builds, Snapshots, Visual Git).
+    No AsyncAPI document was created because there is no server-push transport on
+    Percy's own public API to model. The snapshot upload mechanism is handled by
+    the open-source Percy CLI/SDK and is out of scope for a WebSocket review.

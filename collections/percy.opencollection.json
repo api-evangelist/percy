@@ -1,0 +1,176 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Percy REST API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "apikey": {
+        "key": "Authorization",
+        "value": "Token token={{projectToken}}",
+        "in": "header"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": { "name": "Projects", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get project details.", "type": "http" },
+          "http": { "method": "GET", "url": "https://percy.io/api/v1/projects" },
+          "docs": "Retrieves the details of the project associated with the given project token. Auth: Token token=<PROJECT_TOKEN>."
+        },
+        {
+          "info": { "name": "Create a project.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://percy.io/api/v1/projects",
+            "body": { "type": "json", "data": "{\n  \"data\": {\n    \"type\": \"projects\",\n    \"attributes\": {\n      \"name\": \"my-project\",\n      \"type\": \"web\"\n    }\n  }\n}" }
+          },
+          "docs": "Creates a web or app project. Auth: BrowserStack HTTP Basic (username:accesskey)."
+        },
+        {
+          "info": { "name": "Update project settings.", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://percy.io/api/v1/projects/:id",
+            "params": [
+              { "name": "id", "value": "", "type": "path", "description": "The project's full slug or numeric ID." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"data\": {\n    \"attributes\": {}\n  }\n}" }
+          },
+          "docs": "Updates one or more settings on an existing project. Auth: BrowserStack HTTP Basic."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Builds", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List recent builds.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://percy.io/api/v1/builds?page[limit]=30",
+            "params": [
+              { "name": "filter[branch]", "value": "", "type": "query", "description": "Filter by branch name." },
+              { "name": "filter[state]", "value": "", "type": "query", "description": "Filter by state: processing, finished, failed, waiting." },
+              { "name": "page[limit]", "value": "30", "type": "query", "description": "Results per page (max 30)." }
+            ]
+          },
+          "docs": "Lists builds from the last 30 days. Auth: Token token=<PROJECT_TOKEN>."
+        },
+        {
+          "info": { "name": "Get build details.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://percy.io/api/v1/builds/:build_id?include=build-summary",
+            "params": [
+              { "name": "build_id", "value": "", "type": "path", "description": "The ID of the build." },
+              { "name": "include", "value": "build-summary", "type": "query", "description": "Include additional build summary metadata." }
+            ]
+          },
+          "docs": "Fetches a single build's details. Auth: Token token=<PROJECT_TOKEN>."
+        },
+        {
+          "info": { "name": "Review a build (approve/unapprove/reject).", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://percy.io/api/v1/reviews",
+            "body": { "type": "json", "data": "{\n  \"data\": {\n    \"type\": \"reviews\",\n    \"attributes\": { \"action\": \"approve\" },\n    \"relationships\": {\n      \"build\": { \"data\": { \"type\": \"builds\", \"id\": \"\" } }\n    }\n  }\n}" }
+          },
+          "docs": "Approve, unapprove, or reject a build. Auth: BrowserStack HTTP Basic."
+        },
+        {
+          "info": { "name": "Fail a build.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://percy.io/api/v1/builds/:build_id/fail",
+            "params": [
+              { "name": "build_id", "value": "", "type": "path", "description": "The ID of the build." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"manually-failed-reason\": \"\"\n}" }
+          },
+          "docs": "Manually marks a build as failed with a reason. Auth: BrowserStack HTTP Basic."
+        },
+        {
+          "info": { "name": "Delete a build.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://percy.io/api/v1/builds/:build_id/delete",
+            "params": [
+              { "name": "build_id", "value": "", "type": "path", "description": "The ID of the build." }
+            ]
+          },
+          "docs": "Permanently removes a build. Auth: BrowserStack HTTP Basic."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Snapshots", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List snapshots for a build.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://percy.io/api/v1/snapshots?build_id=:build_id",
+            "params": [
+              { "name": "build_id", "value": "", "type": "query", "description": "The ID of the build whose snapshots to list (required)." },
+              { "name": "filter[search]", "value": "", "type": "query", "description": "Search snapshots by name." },
+              { "name": "page[limit]", "value": "30", "type": "query", "description": "Snapshots per page (default/max 30)." }
+            ]
+          },
+          "docs": "Lists the snapshots that make up a build. Auth: Token token=<PROJECT_TOKEN>."
+        },
+        {
+          "info": { "name": "Get snapshot details.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://percy.io/api/v1/snapshots/:snapshot_id",
+            "params": [
+              { "name": "snapshot_id", "value": "", "type": "path", "description": "The ID of the snapshot." }
+            ]
+          },
+          "docs": "Fetches a single snapshot's details, including review state and comparisons. Auth: Token token=<PROJECT_TOKEN>."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Visual Git", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Sync snapshots to a branchline.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://percy.io/api/v1/branchline/sync",
+            "body": { "type": "json", "data": "{\n  \"project_id\": \"\",\n  \"target_branch_filter\": \"\"\n}" }
+          },
+          "docs": "Syncs a project's snapshots with the branch in target_branch_filter. Auth: Token token=<PROJECT_TOKEN>."
+        },
+        {
+          "info": { "name": "Check sync status.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://percy.io/api/v1/branchline/sync/:sync_id",
+            "params": [
+              { "name": "sync_id", "value": "", "type": "path", "description": "The ID of the sync operation." }
+            ]
+          },
+          "docs": "Retrieves the status of a branchline sync operation. Auth: Token token=<PROJECT_TOKEN>."
+        },
+        {
+          "info": { "name": "Merge snapshots into master branchline.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://percy.io/api/v1/branchline/merge",
+            "body": { "type": "json", "data": "{\n  \"data\": {\n    \"type\": \"branchline-merges\",\n    \"relationships\": {\n      \"build\": { \"data\": { \"type\": \"builds\", \"id\": \"\" } }\n    }\n  }\n}" }
+          },
+          "docs": "Merges approved snapshots from a feature branch into the master branchline. Auth: Token token=<PROJECT_TOKEN>."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,735 @@
+openapi: 3.0.3
+info:
+  title: Percy REST API
+  description: >-
+    Percy is a visual testing and review platform, part of BrowserStack. Snapshots
+    are captured and uploaded during a build by the open-source Percy CLI and SDKs
+    (@percy/cli, @percy/core, @percy/client); that upload path is SDK-internal and is
+    not part of this public REST reference. This document models the documented,
+    publicly referenced Percy REST API under https://percy.io/api/v1 for reading and
+    managing Projects, Builds, and Snapshots, plus Visual Git (branchline) sync and
+    merge.
+
+    Two authentication schemes are used. Read operations (list/get on projects,
+    builds, snapshots, and all Visual Git calls) authenticate with a per-project
+    token passed as `Authorization: Token token=<PROJECT_TOKEN>`. Write and review
+    operations (approve/reject a build, fail or delete a build, create or update a
+    project) authenticate with BrowserStack HTTP Basic auth using your BrowserStack
+    username and access key.
+
+    Request and response bodies here are honestly modeled from the public API
+    reference. Field-level schemas are illustrative; consult the BrowserStack Percy
+    API reference for authoritative payloads.
+  version: '1.0'
+  contact:
+    name: Percy by BrowserStack
+    url: https://www.browserstack.com/docs/percy
+servers:
+  - url: https://percy.io/api/v1
+    description: Percy REST API
+security:
+  - projectToken: []
+tags:
+  - name: Projects
+    description: A project logically groups builds on Percy.
+  - name: Builds
+    description: A build logically groups the test sessions and snapshots of a run.
+  - name: Snapshots
+    description: Snapshots are the individual visual comparisons within a build.
+  - name: Visual Git
+    description: Branchline sync and merge of approved snapshots across branch lines.
+paths:
+  /projects:
+    get:
+      operationId: getProject
+      tags:
+        - Projects
+      summary: Get project details
+      description: Retrieves the details of the project associated with the given project token.
+      security:
+        - projectToken: []
+      responses:
+        '200':
+          description: The project associated with the token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createProject
+      tags:
+        - Projects
+      summary: Create a project
+      description: >-
+        Creates a web or app project programmatically. Authenticates with BrowserStack
+        HTTP Basic auth (username and access key).
+      security:
+        - browserstackBasic: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreateInput'
+      responses:
+        '201':
+          description: The created project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /projects/{id}:
+    patch:
+      operationId: updateProject
+      tags:
+        - Projects
+      summary: Update project settings
+      description: >-
+        Updates one or more settings on an existing project. The id accepts either the
+        project's full slug or its numeric ID. Authenticates with BrowserStack HTTP
+        Basic auth.
+      security:
+        - browserstackBasic: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The project's full slug or numeric ID.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdateInput'
+      responses:
+        '200':
+          description: The updated project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /builds:
+    get:
+      operationId: listBuilds
+      tags:
+        - Builds
+      summary: List recent builds
+      description: Lists builds from the last 30 days for the project associated with the token.
+      security:
+        - projectToken: []
+      parameters:
+        - name: filter[sha]
+          in: query
+          description: Filter builds by a single commit SHA.
+          schema:
+            type: string
+        - name: filter[shas][]
+          in: query
+          description: Filter builds by multiple commit SHAs.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: filter[branch]
+          in: query
+          description: Filter builds by branch name.
+          schema:
+            type: string
+        - name: filter[state]
+          in: query
+          description: Filter builds by state.
+          schema:
+            type: string
+            enum:
+              - processing
+              - finished
+              - failed
+              - waiting
+        - name: page[limit]
+          in: query
+          description: Number of results per page (max 30).
+          schema:
+            type: integer
+            maximum: 30
+        - name: page[cursor]
+          in: query
+          description: Pagination cursor (a build ID).
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of builds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /builds/{build_id}:
+    get:
+      operationId: getBuild
+      tags:
+        - Builds
+      summary: Get build details
+      description: Fetches the details of a single build.
+      security:
+        - projectToken: []
+      parameters:
+        - name: build_id
+          in: path
+          required: true
+          description: The ID of the build.
+          schema:
+            type: string
+        - name: include
+          in: query
+          description: Set to build-summary to include additional build summary metadata.
+          schema:
+            type: string
+            enum:
+              - build-summary
+      responses:
+        '200':
+          description: The requested build.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /builds/{build_id}/fail:
+    post:
+      operationId: failBuild
+      tags:
+        - Builds
+      summary: Fail a build
+      description: >-
+        Manually marks a build as failed with a reason. Authenticates with BrowserStack
+        HTTP Basic auth.
+      security:
+        - browserstackBasic: []
+      parameters:
+        - name: build_id
+          in: path
+          required: true
+          description: The ID of the build.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - manually-failed-reason
+              properties:
+                manually-failed-reason:
+                  type: string
+                  description: A string explaining why the build was manually failed.
+      responses:
+        '200':
+          description: The build was marked as failed.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /builds/{build_id}/delete:
+    post:
+      operationId: deleteBuild
+      tags:
+        - Builds
+      summary: Delete a build
+      description: >-
+        Permanently removes a build. Authenticates with BrowserStack HTTP Basic auth.
+      security:
+        - browserstackBasic: []
+      parameters:
+        - name: build_id
+          in: path
+          required: true
+          description: The ID of the build.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The build was deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /reviews:
+    post:
+      operationId: createReview
+      tags:
+        - Builds
+      summary: Review a build (approve, unapprove, reject)
+      description: >-
+        Creates a review action against a build - approve, unapprove (request-changes
+        removal), or reject. Authenticates with BrowserStack HTTP Basic auth.
+      security:
+        - browserstackBasic: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewInput'
+      responses:
+        '200':
+          description: The review action was applied.
+        '201':
+          description: The review action was created.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /snapshots:
+    get:
+      operationId: listSnapshots
+      tags:
+        - Snapshots
+      summary: List snapshots for a build
+      description: Lists the snapshots that make up a build.
+      security:
+        - projectToken: []
+      parameters:
+        - name: build_id
+          in: query
+          required: true
+          description: The ID of the build whose snapshots to list.
+          schema:
+            type: string
+        - name: filter[review-state-reason][]
+          in: query
+          description: Filter by one or more review state reasons.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: filter[snapshot-ids][]
+          in: query
+          description: Filter by one or more snapshot IDs.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: filter[search]
+          in: query
+          description: Search snapshots by name.
+          schema:
+            type: string
+        - name: page[limit]
+          in: query
+          description: Number of snapshots per page (default and max 30).
+          schema:
+            type: integer
+            maximum: 30
+        - name: page[cursor]
+          in: query
+          description: Pagination cursor for subsequent pages.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of snapshots for the build.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnapshotListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /snapshots/{snapshot_id}:
+    get:
+      operationId: getSnapshot
+      tags:
+        - Snapshots
+      summary: Get snapshot details
+      description: >-
+        Fetches a single snapshot's details, including its review state and
+        per-browser/width comparisons.
+      security:
+        - projectToken: []
+      parameters:
+        - name: snapshot_id
+          in: path
+          required: true
+          description: The ID of the snapshot.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The requested snapshot.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnapshotResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /branchline/sync:
+    post:
+      operationId: syncBranchline
+      tags:
+        - Visual Git
+      summary: Sync snapshots to a branchline
+      description: >-
+        Syncs a project's snapshots with the branch specified in target_branch_filter.
+      security:
+        - projectToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BranchlineSyncInput'
+      responses:
+        '200':
+          description: The sync operation was started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BranchlineSyncResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /branchline/sync/{sync_id}:
+    get:
+      operationId: getBranchlineSync
+      tags:
+        - Visual Git
+      summary: Check sync status
+      description: Retrieves the current status of a branchline sync operation.
+      security:
+        - projectToken: []
+      parameters:
+        - name: sync_id
+          in: path
+          required: true
+          description: The ID of the sync operation.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The sync operation status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BranchlineSyncResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /branchline/merge:
+    post:
+      operationId: mergeBranchline
+      tags:
+        - Visual Git
+      summary: Merge snapshots into the master branchline
+      description: Merges approved snapshots from a feature branch into the master branchline.
+      security:
+        - projectToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BranchlineMergeInput'
+      responses:
+        '200':
+          description: The merge operation was applied.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    projectToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: >-
+        Per-project token passed in the Authorization header using Percy's token
+        scheme - literally `Authorization: Token token=<PROJECT_TOKEN>`. Because the
+        value is prefixed with `Token token=`, model this as a custom header value
+        rather than a plain bearer token.
+    browserstackBasic:
+      type: http
+      scheme: basic
+      description: >-
+        BrowserStack HTTP Basic auth (base64 of username:accesskey). Required for
+        review actions and for creating or updating projects.
+  responses:
+    Unauthorized:
+      description: Authentication failed or the token is missing/invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+              detail:
+                type: string
+    Project:
+      type: object
+      description: A Percy project - a logical grouping of builds.
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          example: projects
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+            slug:
+              type: string
+            'base-branch':
+              type: string
+            'is-enabled':
+              type: boolean
+            'public':
+              type: boolean
+    ProjectResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Project'
+    ProjectCreateInput:
+      type: object
+      description: Payload for creating a web or app project.
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: projects
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                    - web
+                    - app
+                slug:
+                  type: string
+                'auto-approve-branch-filter':
+                  type: string
+                'enable-ai':
+                  type: boolean
+    ProjectUpdateInput:
+      type: object
+      description: Payload for updating project settings.
+      properties:
+        data:
+          type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                'base-branch':
+                  type: string
+                'approval-branch-filter':
+                  type: string
+                'screenshot-limit':
+                  type: integer
+                'intelli-ignore':
+                  type: boolean
+                'public':
+                  type: boolean
+    Build:
+      type: object
+      description: A Percy build - a logical grouping of snapshots for one run.
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          example: builds
+        attributes:
+          type: object
+          properties:
+            'build-number':
+              type: integer
+            state:
+              type: string
+              enum:
+                - processing
+                - finished
+                - failed
+                - waiting
+            'review-state':
+              type: string
+            branch:
+              type: string
+            'commit-sha':
+              type: string
+            'total-snapshots':
+              type: integer
+            'total-comparisons-diff':
+              type: integer
+            'created-at':
+              type: string
+              format: date-time
+    BuildResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Build'
+    BuildListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Build'
+    ReviewInput:
+      type: object
+      description: >-
+        A review action against a build. The action is one of approve, unapprove, or
+        reject (request-changes), targeting a build by ID in the relationships.
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: reviews
+            attributes:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - approve
+                    - unapprove
+                    - reject
+            relationships:
+              type: object
+              properties:
+                build:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: builds
+                        id:
+                          type: string
+    Snapshot:
+      type: object
+      description: A Percy snapshot - one visual comparison within a build.
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          example: snapshots
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+            'review-state':
+              type: string
+            'review-state-reason':
+              type: string
+            'fingerprint':
+              type: string
+    SnapshotResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Snapshot'
+    SnapshotListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Snapshot'
+    BranchlineSyncInput:
+      type: object
+      description: >-
+        Request to sync a project's snapshots with a target branch. Provide either
+        project_id or the project_slug + organization_slug pair.
+      properties:
+        project_id:
+          type: string
+        project_slug:
+          type: string
+        organization_slug:
+          type: string
+        target_branch_filter:
+          type: string
+        snapshot_name_list:
+          type: array
+          items:
+            type: string
+      required:
+        - target_branch_filter
+    BranchlineSyncResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+              example: branchline-syncs
+            attributes:
+              type: object
+              properties:
+                status:
+                  type: string
+    BranchlineMergeInput:
+      type: object
+      description: Request to merge approved snapshots from a feature branch into the master branchline.
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: branchline-merges
+            relationships:
+              type: object
+              properties:
+                build:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: builds
+                        id:
+                          type: string

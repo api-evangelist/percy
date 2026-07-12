@@ -1,0 +1,37 @@
+generated: '2026-07-11'
+method: sourced
+source: BrowserStack Percy API reference (builds, snapshots, projects, visual-git)
+summary:
+  types:
+  - apiKey
+  - http
+schemes:
+- name: projectToken
+  type: apiKey
+  in: header
+  headerName: Authorization
+  description: >-
+    Per-project token used for read operations (list/get on projects, builds, and
+    snapshots, and all Visual Git calls). Passed in the Authorization header using
+    Percy's token scheme - literally `Authorization: Token token=<PROJECT_TOKEN>`.
+    The project token (PERCY_TOKEN) is the same value the Percy CLI/SDK uses to
+    upload snapshots during a build; find it in the project settings in the Percy /
+    BrowserStack dashboard.
+  sources:
+  - https://www.browserstack.com/docs/percy/api-reference/builds
+  - https://www.browserstack.com/docs/percy/api-reference/snapshots
+- name: browserstackBasic
+  type: http
+  scheme: basic
+  description: >-
+    BrowserStack HTTP Basic auth (base64 of username:accesskey), required for review
+    and write operations - approving/unapproving/rejecting a build, manually failing
+    or deleting a build, and creating or updating a project. Uses your BrowserStack
+    username and access key.
+  sources:
+  - https://www.browserstack.com/docs/percy/api-reference/builds
+  - https://www.browserstack.com/docs/percy/api-reference/projects
+notes: >-
+  Snapshot capture and upload during a build is performed by the open-source Percy
+  CLI/SDK using the same PERCY_TOKEN project token; that upload path is SDK-internal
+  and is not part of the documented public REST reference.

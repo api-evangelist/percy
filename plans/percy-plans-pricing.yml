@@ -1,0 +1,121 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Percy
+providerId: percy
+created: '2026-07-11'
+modified: '2026-07-11'
+reconciled: false
+tags:
+- Visual Testing
+- Visual Regression
+- Screenshots
+- QA
+- Plans
+description: >-
+  Percy (part of BrowserStack) prices visual testing on screenshots consumed per
+  month - a screenshot is one rendered snapshot at one browser/width combination.
+  There is a free-forever plan with a bounded monthly screenshot allowance and
+  unlimited users and projects, a paid plan that raises the included screenshot
+  count and build-history retention, and a custom enterprise plan. Screenshot usage
+  beyond a plan's included units is billed as overage at the plan's overage rate.
+  The REST API itself carries no separate fee; API usage draws on the same
+  screenshot allowance as CLI/SDK-driven builds. Percy is also sold as part of the
+  broader BrowserStack platform.
+notes: >-
+  Exact paid-tier names, monthly/annual prices, and overage rates are set on the
+  BrowserStack pricing page and change over time - the paid figures below are
+  grounded in publicly reported 2026 numbers but flagged unreconciled. Verify at
+  https://www.browserstack.com/pricing?product=percy before relying on them. The
+  Free plan's 5,000 screenshots/month with unlimited users and projects is stated
+  in BrowserStack's own Percy documentation.
+sources:
+- https://percy.io/pricing
+- https://www.browserstack.com/docs/percy/overview/plans-and-billing
+- https://www.browserstack.com/support/faq/plans-pricing/plans/what-is-included-in-percys-plans
+- https://www.browserstack.com/pricing?product=percy
+plans:
+- id: percy-free
+  name: Free
+  type: free
+  description: >-
+    Free-forever plan for getting started with visual testing. Confirmed by
+    BrowserStack Percy docs: 5,000 free screenshots per month, unlimited users, and
+    unlimited projects, with 30-day build history.
+  entries:
+  - label: Included Screenshots
+    name: free_screenshots
+    type: usage
+    metric: screenshots
+    limit: 5000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: '0'
+    userMultiplied: false
+  elements:
+  - name: Unlimited Users
+  - name: Unlimited Projects
+  - name: 30-Day Build History
+  - name: Cross-Browser Rendering
+  - name: REST API Access
+- id: percy-professional
+  name: Professional
+  type: paid
+  description: >-
+    Paid plan for teams needing more capacity. Publicly reported 2026 figures put
+    this around $199/month (about $149/month billed annually) with roughly 25,000
+    included screenshots per month and 1-year build history. Names and figures are
+    unreconciled - verify on the BrowserStack pricing page.
+  entries:
+  - label: Included Screenshots
+    name: professional_screenshots
+    type: usage
+    metric: screenshots
+    limit: 25000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: approx $199/month ($149/month billed annually) - verify
+    userMultiplied: false
+  - label: Overage Screenshots
+    name: professional_overage
+    type: usage
+    metric: screenshots
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: per-screenshot overage rate (see pricing page)
+    userMultiplied: false
+  elements:
+  - name: Unlimited Users
+  - name: Unlimited Projects
+  - name: 1-Year Build History
+  - name: Overage Billing Beyond Included Screenshots
+- id: percy-enterprise
+  name: Enterprise / Custom
+  type: enterprise
+  description: >-
+    Custom plan for high screenshot volume, extended retention, security review,
+    SSO, SLAs, and platform bundling with the rest of BrowserStack. Negotiated
+    pricing.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Custom Screenshot Volume
+  - name: Extended Build History
+  - name: SSO and Security Review
+  - name: SLAs and Support
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

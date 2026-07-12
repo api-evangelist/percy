@@ -1,0 +1,144 @@
+aid: percy
+url: https://raw.githubusercontent.com/api-evangelist/percy/refs/heads/main/apis.yml
+name: Percy
+kind: company
+description: Percy is an all-in-one visual testing and review platform, now part of
+  BrowserStack. Test frameworks and CI upload DOM snapshots via the Percy CLI/SDK;
+  Percy renders them across browsers and widths, diffs each against an approved
+  baseline, and surfaces pixel-level visual changes for review and approval. On top
+  of that workflow Percy exposes a documented REST API under https://percy.io/api/v1
+  for reading and managing Projects, Builds, and Snapshots, plus Visual Git
+  (branchline) sync and merge operations. The snapshot capture/upload path itself is
+  driven by the open-source Percy CLI and SDKs rather than a public REST upload
+  endpoint.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Visual Testing
+- Visual Regression
+- Screenshots
+- QA
+- Testing
+- CI/CD
+- BrowserStack
+created: '2026-07-11'
+modified: '2026-07-11'
+specificationVersion: '0.19'
+apis:
+- aid: percy:percy-builds-api
+  name: Percy Builds API
+  tags:
+  - Builds
+  - Visual Testing
+  - QA
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://www.browserstack.com/docs/percy/api-reference/builds
+  baseURL: https://percy.io/api/v1
+  properties:
+  - url: https://www.browserstack.com/docs/percy/api-reference/percy-apis
+    type: Documentation
+  - url: https://www.browserstack.com/docs/percy/api-reference/builds
+    type: APIReference
+  - url: openapi/percy-openapi.yml
+    type: OpenAPI
+  - url: collections/percy.postman_collection.json
+    type: PostmanCollection
+  - url: collections/percy.opencollection.json
+    type: OpenCollection
+  description: A build logically groups the test sessions and snapshots produced by a
+    single run. List recent builds (last 30 days) with filters for SHA, branch, and
+    state, fetch a single build's details and summary, and drive review actions -
+    approve, unapprove, or reject via the reviews endpoint, and manually fail or
+    delete a build. Read operations use a project token; review and destructive
+    actions use BrowserStack Basic auth.
+- aid: percy:percy-snapshots-api
+  name: Percy Snapshots API
+  tags:
+  - Snapshots
+  - Visual Regression
+  - Screenshots
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://www.browserstack.com/docs/percy/api-reference/snapshots
+  baseURL: https://percy.io/api/v1
+  properties:
+  - url: https://www.browserstack.com/docs/percy/api-reference/snapshots
+    type: APIReference
+  - url: openapi/percy-openapi.yml
+    type: OpenAPI
+  - url: collections/percy.postman_collection.json
+    type: PostmanCollection
+  - url: collections/percy.opencollection.json
+    type: OpenCollection
+  description: Read the snapshots that make up a build. List snapshots for a given
+    build_id with pagination and filters (review state reason, snapshot IDs, name
+    search), and fetch a single snapshot's details including its review state and
+    per-browser/width comparisons. Snapshots themselves are created during a build by
+    the Percy CLI/SDK, not through a public REST create endpoint; this API is the
+    read/inspect surface for them.
+- aid: percy:percy-projects-api
+  name: Percy Projects API
+  tags:
+  - Projects
+  - Configuration
+  - QA
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://www.browserstack.com/docs/percy/api-reference/projects
+  baseURL: https://percy.io/api/v1
+  properties:
+  - url: https://www.browserstack.com/docs/percy/api-reference/projects
+    type: APIReference
+  - url: openapi/percy-openapi.yml
+    type: OpenAPI
+  - url: collections/percy.postman_collection.json
+    type: PostmanCollection
+  - url: collections/percy.opencollection.json
+    type: OpenCollection
+  description: A project logically groups builds. Retrieve the details of the project
+    tied to a given project token, create a new web or app project programmatically,
+    and update an existing project's settings - base branch, approval and branch
+    filters, screenshot limits, intelli-ignore, and visibility. Reads use a project
+    token; create and update use BrowserStack Basic auth.
+- aid: percy:percy-visual-git-api
+  name: Percy Visual Git API
+  tags:
+  - Visual Git
+  - Branchline
+  - Snapshots
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://www.browserstack.com/docs/percy/api-reference/visual-git
+  baseURL: https://percy.io/api/v1
+  properties:
+  - url: https://www.browserstack.com/docs/percy/api-reference/visual-git
+    type: APIReference
+  - url: openapi/percy-openapi.yml
+    type: OpenAPI
+  - url: collections/percy.postman_collection.json
+    type: PostmanCollection
+  - url: collections/percy.opencollection.json
+    type: OpenCollection
+  description: Visual Git (branchline) synchronizes approved snapshots across branch
+    lines. Trigger a sync of a project's snapshots with a target branch filter, poll
+    the status of a sync operation by sync_id, and merge approved snapshots from a
+    feature branch into the master branchline. All Visual Git calls use a project
+    token.
+common:
+- type: Authentication
+  url: authentication/percy-authentication.yml
+- type: GitHubOrganization
+  url: https://github.com/percy
+- type: LinkedIn
+  url: https://www.linkedin.com/company/browserstack
+- type: Website
+  url: https://percy.io
+- type: Documentation
+  url: https://www.browserstack.com/docs/percy
+- type: Plans
+  url: plans/percy-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/percy-rate-limits.yml
+- type: FinOps
+  url: finops/percy-finops.yml
+- url: https://percy.io/blog
+  type: Blog
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,69 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Percy
+providerId: percy
+created: '2026-07-11'
+modified: '2026-07-11'
+reconciled: false
+tags:
+- Visual Testing
+- Visual Regression
+- Screenshots
+- QA
+- Rate Limiting
+- Quotas
+description: >-
+  Percy does not publish fixed numeric per-endpoint request-rate limits for its REST
+  API. The practical usage limit on Percy is the monthly screenshot allowance of
+  your plan (5,000/month on the Free plan, more on paid plans, with overage billing
+  beyond the included units) rather than a per-minute API request cap. The List
+  Builds endpoint returns builds from the last 30 days, and list endpoints for
+  builds and snapshots are cursor-paginated with a maximum page size of 30 items -
+  an effective bound on how much can be read per request.
+notes: >-
+  No numeric per-account or per-endpoint API request-rate limit is documented as of
+  the review date; the modeled 429 handling below is standard good practice.
+  Screenshot allowances and overage rates are governed by your plan - verify on the
+  BrowserStack Percy pricing and plans-and-billing pages.
+sources:
+- https://www.browserstack.com/docs/percy/api-reference/percy-apis
+- https://www.browserstack.com/docs/percy/api-reference/builds
+- https://www.browserstack.com/docs/percy/api-reference/snapshots
+- https://www.browserstack.com/docs/percy/overview/plans-and-billing
+responseCodes:
+  throttled: 429
+limits:
+- name: REST API Request Rate
+  scope: account
+  metric: requests
+  limit: not published
+  notes: No fixed numeric request-rate limit is documented for the Percy REST API.
+- name: Monthly Screenshot Allowance
+  scope: account
+  metric: screenshots
+  limit: per plan (5,000/month on Free)
+  notes: The primary usage limit; overage beyond the included units is billed at the plan's overage rate.
+- name: Builds List Page Size
+  scope: request
+  metric: builds
+  limit: 30
+  notes: List Builds returns up to 30 builds per page via page[limit]; use page[cursor] to paginate.
+- name: Snapshots List Page Size
+  scope: request
+  metric: snapshots
+  limit: 30
+  notes: List Snapshots returns up to 30 snapshots per page (default and max); use page[cursor] to paginate.
+- name: Builds Lookback Window
+  scope: account
+  metric: days
+  limit: 30
+  notes: The List Builds endpoint returns builds from the last 30 days.
+policies:
+- name: Cursor Pagination
+  description: Builds and snapshots list endpoints use page[limit] plus a page[cursor] (a resource ID) to page through results.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor Retry-After on any 429 response.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
