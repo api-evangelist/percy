@@ -121,6 +121,8 @@ apis:
     feature branch into the master branchline. All Visual Git calls use a project
     token.
 common:
+- type: AgenticAccess
+  url: agentic-access/percy-agentic-access.yml
 - type: Authentication
   url: authentication/percy-authentication.yml
 - type: GitHubOrganization
