@@ -1,0 +1,304 @@
+openapi: 3.0.3
+info:
+  title: Percy REST Builds API
+  description: 'Percy is a visual testing and review platform, part of BrowserStack. Snapshots are captured and uploaded during a build by the open-source Percy CLI and SDKs (@percy/cli, @percy/core, @percy/client); that upload path is SDK-internal and is not part of this public REST reference. This document models the documented, publicly referenced Percy REST API under https://percy.io/api/v1 for reading and managing Projects, Builds, and Snapshots, plus Visual Git (branchline) sync and merge.
+
+    Two authentication schemes are used. Read operations (list/get on projects, builds, snapshots, and all Visual Git calls) authenticate with a per-project token passed as `Authorization: Token token=<PROJECT_TOKEN>`. Write and review operations (approve/reject a build, fail or delete a build, create or update a project) authenticate with BrowserStack HTTP Basic auth using your BrowserStack username and access key.
+
+    Request and response bodies here are honestly modeled from the public API reference. Field-level schemas are illustrative; consult the BrowserStack Percy API reference for authoritative payloads.'
+  version: '1.0'
+  contact:
+    name: Percy by BrowserStack
+    url: https://www.browserstack.com/docs/percy
+servers:
+- url: https://percy.io/api/v1
+  description: Percy REST API
+security:
+- projectToken: []
+tags:
+- name: Builds
+  description: A build logically groups the test sessions and snapshots of a run.
+paths:
+  /builds:
+    get:
+      operationId: listBuilds
+      tags:
+      - Builds
+      summary: List recent builds
+      description: Lists builds from the last 30 days for the project associated with the token.
+      security:
+      - projectToken: []
+      parameters:
+      - name: filter[sha]
+        in: query
+        description: Filter builds by a single commit SHA.
+        schema:
+          type: string
+      - name: filter[shas][]
+        in: query
+        description: Filter builds by multiple commit SHAs.
+        schema:
+          type: array
+          items:
+            type: string
+      - name: filter[branch]
+        in: query
+        description: Filter builds by branch name.
+        schema:
+          type: string
+      - name: filter[state]
+        in: query
+        description: Filter builds by state.
+        schema:
+          type: string
+          enum:
+          - processing
+          - finished
+          - failed
+          - waiting
+      - name: page[limit]
+        in: query
+        description: Number of results per page (max 30).
+        schema:
+          type: integer
+          maximum: 30
+      - name: page[cursor]
+        in: query
+        description: Pagination cursor (a build ID).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A list of builds.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /builds/{build_id}:
+    get:
+      operationId: getBuild
+      tags:
+      - Builds
+      summary: Get build details
+      description: Fetches the details of a single build.
+      security:
+      - projectToken: []
+      parameters:
+      - name: build_id
+        in: path
+        required: true
+        description: The ID of the build.
+        schema:
+          type: string
+      - name: include
+        in: query
+        description: Set to build-summary to include additional build summary metadata.
+        schema:
+          type: string
+          enum:
+          - build-summary
+      responses:
+        '200':
+          description: The requested build.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /builds/{build_id}/fail:
+    post:
+      operationId: failBuild
+      tags:
+      - Builds
+      summary: Fail a build
+      description: Manually marks a build as failed with a reason. Authenticates with BrowserStack HTTP Basic auth.
+      security:
+      - browserstackBasic: []
+      parameters:
+      - name: build_id
+        in: path
+        required: true
+        description: The ID of the build.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - manually-failed-reason
+              properties:
+                manually-failed-reason:
+                  type: string
+                  description: A string explaining why the build was manually failed.
+      responses:
+        '200':
+          description: The build was marked as failed.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /builds/{build_id}/delete:
+    post:
+      operationId: deleteBuild
+      tags:
+      - Builds
+      summary: Delete a build
+      description: Permanently removes a build. Authenticates with BrowserStack HTTP Basic auth.
+      security:
+      - browserstackBasic: []
+      parameters:
+      - name: build_id
+        in: path
+        required: true
+        description: The ID of the build.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The build was deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /reviews:
+    post:
+      operationId: createReview
+      tags:
+      - Builds
+      summary: Review a build (approve, unapprove, reject)
+      description: Creates a review action against a build - approve, unapprove (request-changes removal), or reject. Authenticates with BrowserStack HTTP Basic auth.
+      security:
+      - browserstackBasic: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewInput'
+      responses:
+        '200':
+          description: The review action was applied.
+        '201':
+          description: The review action was created.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    BuildResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Build'
+    Build:
+      type: object
+      description: A Percy build - a logical grouping of snapshots for one run.
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          example: builds
+        attributes:
+          type: object
+          properties:
+            build-number:
+              type: integer
+            state:
+              type: string
+              enum:
+              - processing
+              - finished
+              - failed
+              - waiting
+            review-state:
+              type: string
+            branch:
+              type: string
+            commit-sha:
+              type: string
+            total-snapshots:
+              type: integer
+            total-comparisons-diff:
+              type: integer
+            created-at:
+              type: string
+              format: date-time
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+              detail:
+                type: string
+    BuildListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Build'
+    ReviewInput:
+      type: object
+      description: A review action against a build. The action is one of approve, unapprove, or reject (request-changes), targeting a build by ID in the relationships.
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: reviews
+            attributes:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - approve
+                  - unapprove
+                  - reject
+            relationships:
+              type: object
+              properties:
+                build:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: builds
+                        id:
+                          type: string
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication failed or the token is missing/invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    projectToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Per-project token passed in the Authorization header using Percy''s token scheme - literally `Authorization: Token token=<PROJECT_TOKEN>`. Because the value is prefixed with `Token token=`, model this as a custom header value rather than a plain bearer token.'
+    browserstackBasic:
+      type: http
+      scheme: basic
+      description: BrowserStack HTTP Basic auth (base64 of username:accesskey). Required for review actions and for creating or updating projects.

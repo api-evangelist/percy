@@ -1,0 +1,197 @@
+openapi: 3.0.3
+info:
+  title: Percy REST Builds Projects API
+  description: 'Percy is a visual testing and review platform, part of BrowserStack. Snapshots are captured and uploaded during a build by the open-source Percy CLI and SDKs (@percy/cli, @percy/core, @percy/client); that upload path is SDK-internal and is not part of this public REST reference. This document models the documented, publicly referenced Percy REST API under https://percy.io/api/v1 for reading and managing Projects, Builds, and Snapshots, plus Visual Git (branchline) sync and merge.
+
+    Two authentication schemes are used. Read operations (list/get on projects, builds, snapshots, and all Visual Git calls) authenticate with a per-project token passed as `Authorization: Token token=<PROJECT_TOKEN>`. Write and review operations (approve/reject a build, fail or delete a build, create or update a project) authenticate with BrowserStack HTTP Basic auth using your BrowserStack username and access key.
+
+    Request and response bodies here are honestly modeled from the public API reference. Field-level schemas are illustrative; consult the BrowserStack Percy API reference for authoritative payloads.'
+  version: '1.0'
+  contact:
+    name: Percy by BrowserStack
+    url: https://www.browserstack.com/docs/percy
+servers:
+- url: https://percy.io/api/v1
+  description: Percy REST API
+security:
+- projectToken: []
+tags:
+- name: Projects
+  description: A project logically groups builds on Percy.
+paths:
+  /projects:
+    get:
+      operationId: getProject
+      tags:
+      - Projects
+      summary: Get project details
+      description: Retrieves the details of the project associated with the given project token.
+      security:
+      - projectToken: []
+      responses:
+        '200':
+          description: The project associated with the token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createProject
+      tags:
+      - Projects
+      summary: Create a project
+      description: Creates a web or app project programmatically. Authenticates with BrowserStack HTTP Basic auth (username and access key).
+      security:
+      - browserstackBasic: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreateInput'
+      responses:
+        '201':
+          description: The created project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /projects/{id}:
+    patch:
+      operationId: updateProject
+      tags:
+      - Projects
+      summary: Update project settings
+      description: Updates one or more settings on an existing project. The id accepts either the project's full slug or its numeric ID. Authenticates with BrowserStack HTTP Basic auth.
+      security:
+      - browserstackBasic: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: The project's full slug or numeric ID.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdateInput'
+      responses:
+        '200':
+          description: The updated project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    ProjectUpdateInput:
+      type: object
+      description: Payload for updating project settings.
+      properties:
+        data:
+          type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                base-branch:
+                  type: string
+                approval-branch-filter:
+                  type: string
+                screenshot-limit:
+                  type: integer
+                intelli-ignore:
+                  type: boolean
+                public:
+                  type: boolean
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+              detail:
+                type: string
+    ProjectResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Project'
+    Project:
+      type: object
+      description: A Percy project - a logical grouping of builds.
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          example: projects
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+            slug:
+              type: string
+            base-branch:
+              type: string
+            is-enabled:
+              type: boolean
+            public:
+              type: boolean
+    ProjectCreateInput:
+      type: object
+      description: Payload for creating a web or app project.
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: projects
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                  - web
+                  - app
+                slug:
+                  type: string
+                auto-approve-branch-filter:
+                  type: string
+                enable-ai:
+                  type: boolean
+  responses:
+    Unauthorized:
+      description: Authentication failed or the token is missing/invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    projectToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Per-project token passed in the Authorization header using Percy''s token scheme - literally `Authorization: Token token=<PROJECT_TOKEN>`. Because the value is prefixed with `Token token=`, model this as a custom header value rather than a plain bearer token.'
+    browserstackBasic:
+      type: http
+      scheme: basic
+      description: BrowserStack HTTP Basic auth (base64 of username:accesskey). Required for review actions and for creating or updating projects.
