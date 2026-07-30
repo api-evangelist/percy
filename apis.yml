@@ -11,7 +11,20 @@ description: Percy is an all-in-one visual testing and review platform, now part
   (branchline) sync and merge operations. The snapshot capture/upload path itself is
   driven by the open-source Percy CLI and SDKs rather than a public REST upload
   endpoint.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/percy.png
 tags:
 - Visual Testing
 - Visual Regression
@@ -26,100 +39,100 @@ specificationVersion: '0.19'
 apis:
 - aid: percy:percy-builds-api
   name: Percy Builds API
-  tags:
-  - Builds
-  - Visual Testing
-  - QA
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  description: A build logically groups the test sessions and snapshots of a run.
   humanURL: https://www.browserstack.com/docs/percy/api-reference/builds
   baseURL: https://percy.io/api/v1
-  properties:
-  - url: https://www.browserstack.com/docs/percy/api-reference/percy-apis
-    type: Documentation
-  - url: https://www.browserstack.com/docs/percy/api-reference/builds
-    type: APIReference
-  - url: openapi/percy-openapi.yml
-    type: OpenAPI
-  - url: collections/percy.postman_collection.json
-    type: PostmanCollection
-  - url: collections/percy.opencollection.json
-    type: OpenCollection
-  description: A build logically groups the test sessions and snapshots produced by a
-    single run. List recent builds (last 30 days) with filters for SHA, branch, and
-    state, fetch a single build's details and summary, and drive review actions -
-    approve, unapprove, or reject via the reviews endpoint, and manually fail or
-    delete a build. Read operations use a project token; review and destructive
-    actions use BrowserStack Basic auth.
-- aid: percy:percy-snapshots-api
-  name: Percy Snapshots API
   tags:
-  - Snapshots
-  - Visual Regression
-  - Screenshots
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://www.browserstack.com/docs/percy/api-reference/snapshots
-  baseURL: https://percy.io/api/v1
+  - Builds
   properties:
-  - url: https://www.browserstack.com/docs/percy/api-reference/snapshots
-    type: APIReference
-  - url: openapi/percy-openapi.yml
-    type: OpenAPI
-  - url: collections/percy.postman_collection.json
-    type: PostmanCollection
-  - url: collections/percy.opencollection.json
-    type: OpenCollection
-  description: Read the snapshots that make up a build. List snapshots for a given
-    build_id with pagination and filters (review state reason, snapshot IDs, name
-    search), and fetch a single snapshot's details including its review state and
-    per-browser/width comparisons. Snapshots themselves are created during a build by
-    the Percy CLI/SDK, not through a public REST create endpoint; this API is the
-    read/inspect surface for them.
+  - type: OpenAPI
+    url: openapi/percy-builds-api-openapi.yml
+  - type: Documentation
+    url: https://www.browserstack.com/docs/percy/api-reference/percy-apis
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/builds
+  - type: PostmanCollection
+    url: collections/percy.postman_collection.json
+  - type: OpenCollection
+    url: collections/percy.opencollection.json
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/snapshots
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/projects
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/visual-git
 - aid: percy:percy-projects-api
   name: Percy Projects API
+  description: A project logically groups builds on Percy.
+  humanURL: https://www.browserstack.com/docs/percy/api-reference/builds
+  baseURL: https://percy.io/api/v1
   tags:
   - Projects
-  - Configuration
-  - QA
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://www.browserstack.com/docs/percy/api-reference/projects
-  baseURL: https://percy.io/api/v1
   properties:
-  - url: https://www.browserstack.com/docs/percy/api-reference/projects
-    type: APIReference
-  - url: openapi/percy-openapi.yml
-    type: OpenAPI
-  - url: collections/percy.postman_collection.json
-    type: PostmanCollection
-  - url: collections/percy.opencollection.json
-    type: OpenCollection
-  description: A project logically groups builds. Retrieve the details of the project
-    tied to a given project token, create a new web or app project programmatically,
-    and update an existing project's settings - base branch, approval and branch
-    filters, screenshot limits, intelli-ignore, and visibility. Reads use a project
-    token; create and update use BrowserStack Basic auth.
+  - type: OpenAPI
+    url: openapi/percy-projects-api-openapi.yml
+  - type: Documentation
+    url: https://www.browserstack.com/docs/percy/api-reference/percy-apis
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/builds
+  - type: PostmanCollection
+    url: collections/percy.postman_collection.json
+  - type: OpenCollection
+    url: collections/percy.opencollection.json
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/snapshots
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/projects
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/visual-git
+- aid: percy:percy-snapshots-api
+  name: Percy Snapshots API
+  description: Snapshots are the individual visual comparisons within a build.
+  humanURL: https://www.browserstack.com/docs/percy/api-reference/builds
+  baseURL: https://percy.io/api/v1
+  tags:
+  - Snapshots
+  properties:
+  - type: OpenAPI
+    url: openapi/percy-snapshots-api-openapi.yml
+  - type: Documentation
+    url: https://www.browserstack.com/docs/percy/api-reference/percy-apis
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/builds
+  - type: PostmanCollection
+    url: collections/percy.postman_collection.json
+  - type: OpenCollection
+    url: collections/percy.opencollection.json
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/snapshots
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/projects
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/visual-git
 - aid: percy:percy-visual-git-api
   name: Percy Visual Git API
+  description: Branchline sync and merge of approved snapshots across branch lines.
+  humanURL: https://www.browserstack.com/docs/percy/api-reference/builds
+  baseURL: https://percy.io/api/v1
   tags:
   - Visual Git
-  - Branchline
-  - Snapshots
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://www.browserstack.com/docs/percy/api-reference/visual-git
-  baseURL: https://percy.io/api/v1
   properties:
-  - url: https://www.browserstack.com/docs/percy/api-reference/visual-git
-    type: APIReference
-  - url: openapi/percy-openapi.yml
-    type: OpenAPI
-  - url: collections/percy.postman_collection.json
-    type: PostmanCollection
-  - url: collections/percy.opencollection.json
-    type: OpenCollection
-  description: Visual Git (branchline) synchronizes approved snapshots across branch
-    lines. Trigger a sync of a project's snapshots with a target branch filter, poll
-    the status of a sync operation by sync_id, and merge approved snapshots from a
-    feature branch into the master branchline. All Visual Git calls use a project
-    token.
+  - type: OpenAPI
+    url: openapi/percy-visual-git-api-openapi.yml
+  - type: Documentation
+    url: https://www.browserstack.com/docs/percy/api-reference/percy-apis
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/builds
+  - type: PostmanCollection
+    url: collections/percy.postman_collection.json
+  - type: OpenCollection
+    url: collections/percy.opencollection.json
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/snapshots
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/projects
+  - type: APIReference
+    url: https://www.browserstack.com/docs/percy/api-reference/visual-git
 common:
 - type: AgenticAccess
   url: agentic-access/percy-agentic-access.yml
