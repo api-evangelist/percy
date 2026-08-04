@@ -1,0 +1,20 @@
+{
+  "provider": "percy",
+  "sources": [
+    "percy-builds-api-openapi.yml",
+    "percy-projects-api-openapi.yml",
+    "percy-snapshots-api-openapi.yml",
+    "percy-visual-git-api-openapi.yml"
+  ],
+  "outputs": [
+    "percy-builds-api-openapi.yml",
+    "percy-projects-api-openapi.yml",
+    "percy-snapshots-api-openapi.yml",
+    "percy-visual-git-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
