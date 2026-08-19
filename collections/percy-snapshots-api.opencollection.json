@@ -1,0 +1,106 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Percy REST Builds Snapshots API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Snapshots",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List snapshots for a build",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://percy.io/api/v1/snapshots",
+            "params": [
+              {
+                "name": "build_id",
+                "value": "",
+                "type": "query",
+                "description": "The ID of the build whose snapshots to list."
+              },
+              {
+                "name": "filter[review-state-reason][]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by one or more review state reasons."
+              },
+              {
+                "name": "filter[snapshot-ids][]",
+                "value": "",
+                "type": "query",
+                "description": "Filter by one or more snapshot IDs."
+              },
+              {
+                "name": "filter[search]",
+                "value": "",
+                "type": "query",
+                "description": "Search snapshots by name."
+              },
+              {
+                "name": "page[limit]",
+                "value": "",
+                "type": "query",
+                "description": "Number of snapshots per page (default and max 30)."
+              },
+              {
+                "name": "page[cursor]",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor for subsequent pages."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Lists the snapshots that make up a build."
+        },
+        {
+          "info": {
+            "name": "Get snapshot details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://percy.io/api/v1/snapshots/:snapshot_id",
+            "params": [
+              {
+                "name": "snapshot_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the snapshot."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Fetches a single snapshot's details, including its review state and per-browser/width comparisons."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

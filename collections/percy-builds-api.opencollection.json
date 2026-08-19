@@ -1,0 +1,184 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Percy REST Builds API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Builds",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List recent builds",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://percy.io/api/v1/builds",
+            "params": [
+              {
+                "name": "filter[sha]",
+                "value": "",
+                "type": "query",
+                "description": "Filter builds by a single commit SHA."
+              },
+              {
+                "name": "filter[shas][]",
+                "value": "",
+                "type": "query",
+                "description": "Filter builds by multiple commit SHAs."
+              },
+              {
+                "name": "filter[branch]",
+                "value": "",
+                "type": "query",
+                "description": "Filter builds by branch name."
+              },
+              {
+                "name": "filter[state]",
+                "value": "",
+                "type": "query",
+                "description": "Filter builds by state."
+              },
+              {
+                "name": "page[limit]",
+                "value": "",
+                "type": "query",
+                "description": "Number of results per page (max 30)."
+              },
+              {
+                "name": "page[cursor]",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor (a build ID)."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Lists builds from the last 30 days for the project associated with the token."
+        },
+        {
+          "info": {
+            "name": "Get build details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://percy.io/api/v1/builds/:build_id",
+            "params": [
+              {
+                "name": "build_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the build."
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Set to build-summary to include additional build summary metadata."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Fetches the details of a single build."
+        },
+        {
+          "info": {
+            "name": "Fail a build",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://percy.io/api/v1/builds/:build_id/fail",
+            "params": [
+              {
+                "name": "build_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the build."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Manually marks a build as failed with a reason. Authenticates with BrowserStack HTTP Basic auth."
+        },
+        {
+          "info": {
+            "name": "Delete a build",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://percy.io/api/v1/builds/:build_id/delete",
+            "params": [
+              {
+                "name": "build_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the build."
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Permanently removes a build. Authenticates with BrowserStack HTTP Basic auth."
+        },
+        {
+          "info": {
+            "name": "Review a build (approve, unapprove, reject)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://percy.io/api/v1/reviews",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Creates a review action against a build - approve, unapprove (request-changes removal), or reject. Authenticates with BrowserStack HTTP Basic auth."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

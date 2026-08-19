@@ -1,0 +1,93 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Percy REST Builds Visual Git API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Visual Git",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Sync snapshots to a branchline",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://percy.io/api/v1/branchline/sync",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Syncs a project's snapshots with the branch specified in target_branch_filter."
+        },
+        {
+          "info": {
+            "name": "Check sync status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://percy.io/api/v1/branchline/sync/:sync_id",
+            "params": [
+              {
+                "name": "sync_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the sync operation."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Retrieves the current status of a branchline sync operation."
+        },
+        {
+          "info": {
+            "name": "Merge snapshots into the master branchline",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://percy.io/api/v1/branchline/merge",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Authorization",
+              "value": "{{Authorization}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Merges approved snapshots from a feature branch into the master branchline."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
