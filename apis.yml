@@ -67,6 +67,8 @@ apis:
   humanURL: https://www.browserstack.com/docs/percy/api-reference/builds
   baseURL: https://percy.io/api/v1
   tags:
+  - Project
+  tags_raw:
   - Projects
   properties:
   - type: OpenAPI
