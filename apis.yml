@@ -11,6 +11,18 @@ description: Percy is an all-in-one visual testing and review platform, now part
   (branchline) sync and merge operations. The snapshot capture/upload path itself is
   driven by the open-source Percy CLI and SDKs rather than a public REST upload
   endpoint.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: self-serve
