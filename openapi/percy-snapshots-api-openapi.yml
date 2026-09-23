@@ -1,11 +1,7 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Percy REST Builds Snapshots API
-  description: 'Percy is a visual testing and review platform, part of BrowserStack. Snapshots are captured and uploaded during a build by the open-source Percy CLI and SDKs (@percy/cli, @percy/core, @percy/client); that upload path is SDK-internal and is not part of this public REST reference. This document models the documented, publicly referenced Percy REST API under https://percy.io/api/v1 for reading and managing Projects, Builds, and Snapshots, plus Visual Git (branchline) sync and merge.
-
-    Two authentication schemes are used. Read operations (list/get on projects, builds, snapshots, and all Visual Git calls) authenticate with a per-project token passed as `Authorization: Token token=<PROJECT_TOKEN>`. Write and review operations (approve/reject a build, fail or delete a build, create or update a project) authenticate with BrowserStack HTTP Basic auth using your BrowserStack username and access key.
-
-    Request and response bodies here are honestly modeled from the public API reference. Field-level schemas are illustrative; consult the BrowserStack Percy API reference for authoritative payloads.'
+  title: Percy REST Snapshots API
+  description: Percy is a visual testing and review platform, part of BrowserStack.
   version: '1.0'
   contact:
     name: Percy by BrowserStack
@@ -102,20 +98,19 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Authentication failed or the token is missing/invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    SnapshotListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Snapshot'
+    SnapshotResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Snapshot'
     Error:
       type: object
       properties:
@@ -148,18 +143,19 @@ components:
               type: string
             fingerprint:
               type: string
-    SnapshotResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/Snapshot'
-    SnapshotListResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Snapshot'
+  responses:
+    Unauthorized:
+      description: Authentication failed or the token is missing/invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     projectToken:
       type: apiKey
