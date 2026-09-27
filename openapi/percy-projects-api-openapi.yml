@@ -89,6 +89,18 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+              detail:
+                type: string
     ProjectUpdateInput:
       type: object
       description: Payload for updating project settings.
@@ -109,45 +121,6 @@ components:
                   type: boolean
                 public:
                   type: boolean
-    Project:
-      type: object
-      description: A Percy project - a logical grouping of builds.
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          example: projects
-        attributes:
-          type: object
-          properties:
-            name:
-              type: string
-            slug:
-              type: string
-            base-branch:
-              type: string
-            is-enabled:
-              type: boolean
-            public:
-              type: boolean
-    ProjectResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/Project'
-    Error:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              status:
-                type: string
-              detail:
-                type: string
     ProjectCreateInput:
       type: object
       description: Payload for creating a web or app project.
@@ -174,6 +147,33 @@ components:
                   type: string
                 enable-ai:
                   type: boolean
+    ProjectResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Project'
+    Project:
+      type: object
+      description: A Percy project - a logical grouping of builds.
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          example: projects
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+            slug:
+              type: string
+            base-branch:
+              type: string
+            is-enabled:
+              type: boolean
+            public:
+              type: boolean
   responses:
     Unauthorized:
       description: Authentication failed or the token is missing/invalid.

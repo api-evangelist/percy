@@ -184,40 +184,18 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    Build:
+    Error:
       type: object
-      description: A Percy build - a logical grouping of snapshots for one run.
       properties:
-        id:
-          type: string
-        type:
-          type: string
-          example: builds
-        attributes:
-          type: object
-          properties:
-            build-number:
-              type: integer
-            state:
-              type: string
-              enum:
-              - processing
-              - finished
-              - failed
-              - waiting
-            review-state:
-              type: string
-            branch:
-              type: string
-            commit-sha:
-              type: string
-            total-snapshots:
-              type: integer
-            total-comparisons-diff:
-              type: integer
-            created-at:
-              type: string
-              format: date-time
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+              detail:
+                type: string
     ReviewInput:
       type: object
       description: A review action against a build. The action is one of approve, unapprove, or reject (request-changes), targeting a build by ID in the relationships.
@@ -256,18 +234,6 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/Build'
-    Error:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              status:
-                type: string
-              detail:
-                type: string
     BuildListResponse:
       type: object
       properties:
@@ -275,15 +241,49 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Build'
+    Build:
+      type: object
+      description: A Percy build - a logical grouping of snapshots for one run.
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          example: builds
+        attributes:
+          type: object
+          properties:
+            build-number:
+              type: integer
+            state:
+              type: string
+              enum:
+              - processing
+              - finished
+              - failed
+              - waiting
+            review-state:
+              type: string
+            branch:
+              type: string
+            commit-sha:
+              type: string
+            total-snapshots:
+              type: integer
+            total-comparisons-diff:
+              type: integer
+            created-at:
+              type: string
+              format: date-time
   responses:
-    Unauthorized:
-      description: Authentication failed or the token is missing/invalid.
+    NotFound:
+      description: The requested resource was not found.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
+    Unauthorized:
+      description: Authentication failed or the token is missing/invalid.
       content:
         application/json:
           schema:

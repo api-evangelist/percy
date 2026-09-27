@@ -112,18 +112,6 @@ components:
                           example: builds
                         id:
                           type: string
-    Error:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              status:
-                type: string
-              detail:
-                type: string
     BranchlineSyncInput:
       type: object
       description: Request to sync a project's snapshots with a target branch. Provide either project_id or the project_slug + organization_slug pair.
@@ -142,6 +130,18 @@ components:
             type: string
       required:
       - target_branch_filter
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+              detail:
+                type: string
     BranchlineSyncResponse:
       type: object
       properties:
@@ -159,14 +159,14 @@ components:
                 status:
                   type: string
   responses:
-    Unauthorized:
-      description: Authentication failed or the token is missing/invalid.
+    NotFound:
+      description: The requested resource was not found.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
+    Unauthorized:
+      description: Authentication failed or the token is missing/invalid.
       content:
         application/json:
           schema:
