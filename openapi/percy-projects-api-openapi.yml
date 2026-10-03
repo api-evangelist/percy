@@ -88,19 +88,14 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  responses:
+    Unauthorized:
+      description: Authentication failed or the token is missing/invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    Error:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              status:
-                type: string
-              detail:
-                type: string
     ProjectUpdateInput:
       type: object
       description: Payload for updating project settings.
@@ -121,6 +116,11 @@ components:
                   type: boolean
                 public:
                   type: boolean
+    ProjectResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Project'
     ProjectCreateInput:
       type: object
       description: Payload for creating a web or app project.
@@ -147,11 +147,18 @@ components:
                   type: string
                 enable-ai:
                   type: boolean
-    ProjectResponse:
+    Error:
       type: object
       properties:
-        data:
-          $ref: '#/components/schemas/Project'
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+              detail:
+                type: string
     Project:
       type: object
       description: A Percy project - a logical grouping of builds.
@@ -174,13 +181,6 @@ components:
               type: boolean
             public:
               type: boolean
-  responses:
-    Unauthorized:
-      description: Authentication failed or the token is missing/invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     projectToken:
       type: apiKey
