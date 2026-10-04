@@ -149,6 +149,9 @@ apis:
   - type: APIReference
     url: https://www.browserstack.com/docs/percy/api-reference/visual-git
 common:
+- type: CapabilityMap
+  url: capabilities/percy-capability-edges.yml
+  name: Percy Business Capability Map
 - type: AgenticAccess
   url: agentic-access/percy-agentic-access.yml
 - type: Authentication

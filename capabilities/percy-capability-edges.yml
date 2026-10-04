@@ -1,0 +1,34 @@
+slug: percy
+provider: Percy
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 2
+edges:
+- tag: Builds
+  spec_file: percy-builds-api-openapi.yml
+  capability_id: BC-4200.50
+  capability_id_l1: BC-4200
+  capability_name: Software Quality Engineering
+  confidence: 0.82
+  evidence: POST /builds/{build_id}/fail  Fail a build; POST /reviews  Review a build (approve, unapprove,
+    reject); "Percy is a visual testing and review platform"
+  reason: A Percy 'build' is a visual test run whose diffs are approved or rejected; failing and reviewing
+    builds is test-result adjudication, i.e. software quality engineering rather than CI artefact production.
+- tag: Snapshots
+  spec_file: percy-snapshots-api-openapi.yml
+  capability_id: BC-4200.50
+  capability_id_l1: BC-4200
+  capability_name: Software Quality Engineering
+  confidence: 0.8
+  evidence: GET /snapshots  List snapshots for a build; GET /snapshots/{snapshot_id}  Get snapshot details
+  reason: Snapshots are the individual visual test cases/results within a test build on Percy's visual
+    testing platform — automated test suite and result stewardship.
