@@ -183,20 +183,24 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  responses:
-    Unauthorized:
-      description: Authentication failed or the token is missing/invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    BuildResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Build'
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+              detail:
+                type: string
     ReviewInput:
       type: object
       description: A review action against a build. The action is one of approve, unapprove, or reject (request-changes), targeting a build by ID in the relationships.
@@ -264,23 +268,6 @@ components:
             created-at:
               type: string
               format: date-time
-    Error:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              status:
-                type: string
-              detail:
-                type: string
-    BuildResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/Build'
     BuildListResponse:
       type: object
       properties:
@@ -288,6 +275,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Build'
+  responses:
+    Unauthorized:
+      description: Authentication failed or the token is missing/invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     projectToken:
       type: apiKey

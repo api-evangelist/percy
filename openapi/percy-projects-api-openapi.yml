@@ -88,65 +88,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  responses:
-    Unauthorized:
-      description: Authentication failed or the token is missing/invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    ProjectUpdateInput:
-      type: object
-      description: Payload for updating project settings.
-      properties:
-        data:
-          type: object
-          properties:
-            attributes:
-              type: object
-              properties:
-                base-branch:
-                  type: string
-                approval-branch-filter:
-                  type: string
-                screenshot-limit:
-                  type: integer
-                intelli-ignore:
-                  type: boolean
-                public:
-                  type: boolean
-    ProjectResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/Project'
-    ProjectCreateInput:
-      type: object
-      description: Payload for creating a web or app project.
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              example: projects
-            attributes:
-              type: object
-              properties:
-                name:
-                  type: string
-                type:
-                  type: string
-                  enum:
-                  - web
-                  - app
-                slug:
-                  type: string
-                auto-approve-branch-filter:
-                  type: string
-                enable-ai:
-                  type: boolean
     Error:
       type: object
       properties:
@@ -181,6 +123,64 @@ components:
               type: boolean
             public:
               type: boolean
+    ProjectUpdateInput:
+      type: object
+      description: Payload for updating project settings.
+      properties:
+        data:
+          type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                base-branch:
+                  type: string
+                approval-branch-filter:
+                  type: string
+                screenshot-limit:
+                  type: integer
+                intelli-ignore:
+                  type: boolean
+                public:
+                  type: boolean
+    ProjectCreateInput:
+      type: object
+      description: Payload for creating a web or app project.
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: projects
+            attributes:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                  - web
+                  - app
+                slug:
+                  type: string
+                auto-approve-branch-filter:
+                  type: string
+                enable-ai:
+                  type: boolean
+    ProjectResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Project'
+  responses:
+    Unauthorized:
+      description: Authentication failed or the token is missing/invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     projectToken:
       type: apiKey

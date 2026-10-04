@@ -87,19 +87,6 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
-  responses:
-    Unauthorized:
-      description: Authentication failed or the token is missing/invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     Error:
       type: object
@@ -113,22 +100,24 @@ components:
                 type: string
               detail:
                 type: string
-    BranchlineSyncResponse:
+    BranchlineSyncInput:
       type: object
+      description: Request to sync a project's snapshots with a target branch. Provide either project_id or the project_slug + organization_slug pair.
       properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-              example: branchline-syncs
-            attributes:
-              type: object
-              properties:
-                status:
-                  type: string
+        project_id:
+          type: string
+        project_slug:
+          type: string
+        organization_slug:
+          type: string
+        target_branch_filter:
+          type: string
+        snapshot_name_list:
+          type: array
+          items:
+            type: string
+      required:
+      - target_branch_filter
     BranchlineMergeInput:
       type: object
       description: Request to merge approved snapshots from a feature branch into the master branchline.
@@ -153,24 +142,35 @@ components:
                           example: builds
                         id:
                           type: string
-    BranchlineSyncInput:
+    BranchlineSyncResponse:
       type: object
-      description: Request to sync a project's snapshots with a target branch. Provide either project_id or the project_slug + organization_slug pair.
       properties:
-        project_id:
-          type: string
-        project_slug:
-          type: string
-        organization_slug:
-          type: string
-        target_branch_filter:
-          type: string
-        snapshot_name_list:
-          type: array
-          items:
-            type: string
-      required:
-      - target_branch_filter
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+              example: branchline-syncs
+            attributes:
+              type: object
+              properties:
+                status:
+                  type: string
+  responses:
+    Unauthorized:
+      description: Authentication failed or the token is missing/invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     projectToken:
       type: apiKey
