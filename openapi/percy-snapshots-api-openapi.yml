@@ -99,6 +99,11 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
+    SnapshotResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Snapshot'
     Error:
       type: object
       properties:
@@ -138,11 +143,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Snapshot'
-    SnapshotResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/Snapshot'
   responses:
     Unauthorized:
       description: Authentication failed or the token is missing/invalid.

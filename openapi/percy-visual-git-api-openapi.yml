@@ -100,24 +100,22 @@ components:
                 type: string
               detail:
                 type: string
-    BranchlineSyncInput:
+    BranchlineSyncResponse:
       type: object
-      description: Request to sync a project's snapshots with a target branch. Provide either project_id or the project_slug + organization_slug pair.
       properties:
-        project_id:
-          type: string
-        project_slug:
-          type: string
-        organization_slug:
-          type: string
-        target_branch_filter:
-          type: string
-        snapshot_name_list:
-          type: array
-          items:
-            type: string
-      required:
-      - target_branch_filter
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+              example: branchline-syncs
+            attributes:
+              type: object
+              properties:
+                status:
+                  type: string
     BranchlineMergeInput:
       type: object
       description: Request to merge approved snapshots from a feature branch into the master branchline.
@@ -142,22 +140,24 @@ components:
                           example: builds
                         id:
                           type: string
-    BranchlineSyncResponse:
+    BranchlineSyncInput:
       type: object
+      description: Request to sync a project's snapshots with a target branch. Provide either project_id or the project_slug + organization_slug pair.
       properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-              example: branchline-syncs
-            attributes:
-              type: object
-              properties:
-                status:
-                  type: string
+        project_id:
+          type: string
+        project_slug:
+          type: string
+        organization_slug:
+          type: string
+        target_branch_filter:
+          type: string
+        snapshot_name_list:
+          type: array
+          items:
+            type: string
+      required:
+      - target_branch_filter
   responses:
     Unauthorized:
       description: Authentication failed or the token is missing/invalid.

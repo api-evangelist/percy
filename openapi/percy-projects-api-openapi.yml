@@ -89,18 +89,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              status:
-                type: string
-              detail:
-                type: string
     Project:
       type: object
       description: A Percy project - a logical grouping of builds.
@@ -123,26 +111,18 @@ components:
               type: boolean
             public:
               type: boolean
-    ProjectUpdateInput:
+    Error:
       type: object
-      description: Payload for updating project settings.
       properties:
-        data:
-          type: object
-          properties:
-            attributes:
-              type: object
-              properties:
-                base-branch:
-                  type: string
-                approval-branch-filter:
-                  type: string
-                screenshot-limit:
-                  type: integer
-                intelli-ignore:
-                  type: boolean
-                public:
-                  type: boolean
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+              detail:
+                type: string
     ProjectCreateInput:
       type: object
       description: Payload for creating a web or app project.
@@ -174,6 +154,26 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/Project'
+    ProjectUpdateInput:
+      type: object
+      description: Payload for updating project settings.
+      properties:
+        data:
+          type: object
+          properties:
+            attributes:
+              type: object
+              properties:
+                base-branch:
+                  type: string
+                approval-branch-filter:
+                  type: string
+                screenshot-limit:
+                  type: integer
+                intelli-ignore:
+                  type: boolean
+                public:
+                  type: boolean
   responses:
     Unauthorized:
       description: Authentication failed or the token is missing/invalid.

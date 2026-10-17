@@ -184,11 +184,13 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    BuildResponse:
+    BuildListResponse:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/Build'
+          type: array
+          items:
+            $ref: '#/components/schemas/Build'
     Error:
       type: object
       properties:
@@ -201,39 +203,6 @@ components:
                 type: string
               detail:
                 type: string
-    ReviewInput:
-      type: object
-      description: A review action against a build. The action is one of approve, unapprove, or reject (request-changes), targeting a build by ID in the relationships.
-      properties:
-        data:
-          type: object
-          properties:
-            type:
-              type: string
-              example: reviews
-            attributes:
-              type: object
-              properties:
-                action:
-                  type: string
-                  enum:
-                  - approve
-                  - unapprove
-                  - reject
-            relationships:
-              type: object
-              properties:
-                build:
-                  type: object
-                  properties:
-                    data:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          example: builds
-                        id:
-                          type: string
     Build:
       type: object
       description: A Percy build - a logical grouping of snapshots for one run.
@@ -268,13 +237,44 @@ components:
             created-at:
               type: string
               format: date-time
-    BuildListResponse:
+    BuildResponse:
       type: object
       properties:
         data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Build'
+          $ref: '#/components/schemas/Build'
+    ReviewInput:
+      type: object
+      description: A review action against a build. The action is one of approve, unapprove, or reject (request-changes), targeting a build by ID in the relationships.
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              example: reviews
+            attributes:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                  - approve
+                  - unapprove
+                  - reject
+            relationships:
+              type: object
+              properties:
+                build:
+                  type: object
+                  properties:
+                    data:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: builds
+                        id:
+                          type: string
   responses:
     Unauthorized:
       description: Authentication failed or the token is missing/invalid.
