@@ -4,6 +4,7 @@ checked:
 - https://github.com/marketplace?type=apps
 - okta/integrations/okta-integration-edges.yml
 - atlassian/integrations/atlassian-integration-edges.yml
+- github/integrations/github-integration-edges.yml
 marketplace_apps: []
 edges:
 - partner_name: Okta (own)
@@ -47,5 +48,27 @@ edges:
   detected: '2026-10-21'
   detected_by: mirror-platform-listings.py
   category: Continuous integration
+- partner_name: GitHub (own)
+  partner: github
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://github.com/marketplace/percy
+  mirror_of: github/integrations/github-integration-edges.yml
+  apps:
+  - Percy
+  listing_count: 1
+  detected: '2026-10-21'
+  detected_by: mirror-platform-listings.py
+  badges:
+  - Verified publisher
+  - Verified domain
+  publisher_verified:
+  - Verified publisher
+  - Verified domain
 source:
 - https://github.com/marketplace?type=apps
