@@ -3,6 +3,7 @@ method: searched
 checked:
 - https://github.com/marketplace?type=apps
 - okta/integrations/okta-integration-edges.yml
+- atlassian/integrations/atlassian-integration-edges.yml
 marketplace_apps: []
 edges:
 - partner_name: Okta (own)
@@ -29,5 +30,22 @@ edges:
   - DEACTIVATE
   - SAML
   - UPDATE
+- partner_name: Atlassian (own)
+  partner: atlassian
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://marketplace.atlassian.com/vendors/1216964/percy
+  mirror_of: atlassian/integrations/atlassian-integration-edges.yml
+  apps:
+  - Visual testing and reviews for Bitbucket
+  listing_count: 1
+  detected: '2026-10-21'
+  detected_by: mirror-platform-listings.py
+  category: Continuous integration
 source:
 - https://github.com/marketplace?type=apps

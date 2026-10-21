@@ -16,3 +16,16 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: percy-atlassian-own
+  label: Atlassian (own)
+  partner: atlassian
+  partner_name: Atlassian (own)
+  category: Continuous integration
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://marketplace.atlassian.com/vendors/1216964/percy
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
