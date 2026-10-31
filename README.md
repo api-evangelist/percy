@@ -1,4 +1,4 @@
-# Percy (percy)
+# Percy
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,128 +64,123 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Percy is an all-in-one visual testing and review platform, now part of **BrowserStack** (acquired 2020, offered as "Percy by BrowserStack"). In a typical workflow your test framework or CI uploads DOM snapshots via the open-source Percy CLI/SDK; Percy renders each snapshot across browsers and responsive widths, diffs it against an approved baseline, and surfaces pixel-level visual changes for review and approval. On top of that workflow Percy exposes a documented **REST API** under `https://percy.io/api/v1` for reading and managing Projects, Builds, and Snapshots, plus Visual Git (branchline) sync and merge.
+Percy is an all-in-one visual testing and review platform, now part of BrowserStack. Test frameworks and CI upload DOM snapshots via the Percy CLI/SDK; Percy renders them across browsers and widths, diffs each against an approved baseline, and surfaces pixel-level visual changes for review and approval. On top of that workflow Percy exposes a documented REST API under https://percy.io/api/v1 for reading and managing Projects, Builds, and Snapshots, plus Visual Git (branchline) sync and merge operations. The snapshot capture/upload path itself is driven by the open-source Percy CLI and SDKs rather than a public REST upload endpoint.
 
-**A note on the access model:** the snapshot *capture and upload* path - the part that actually creates snapshots during a build - is driven by the open-source Percy CLI and SDKs (`@percy/cli`, `@percy/core`, `@percy/client`) using a project token (`PERCY_TOKEN`), not by a public REST "create snapshot" endpoint. The public REST reference documents reading and managing the resulting Projects, Builds, and Snapshots. This repository models only the documented public REST surface and flags the CLI/SDK-internal upload path honestly.
+**Areas:** Visual Testing · Visual Regression · Screenshots · QA · Testing · CI/CD · BrowserStack · Developer Tools
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/percy/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/percy/refs/heads/main/apis.yml)
+## Percy on APIs.io
 
-## Tags
+Everything profiled for Percy is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/percy/](https://apis.io/providers/percy/)** — or go straight to one of the APIs or properties below.
 
-- Visual Testing
-- Visual Regression
-- Screenshots
-- QA
-- Testing
-- CI/CD
-- BrowserStack
+### APIs (4)
 
-## Timestamps
+- [Percy Builds API](https://apis.io/apis/percy/percy-builds-api/) — A build logically groups the test sessions and snapshots of a run.
+- [Percy Projects API](https://apis.io/apis/percy/percy-projects-api/) — A project logically groups builds on Percy.
+- [Percy Snapshots API](https://apis.io/apis/percy/percy-snapshots-api/) — Snapshots are the individual visual comparisons within a build.
+- [Percy Visual Git API](https://apis.io/apis/percy/percy-visual-git-api/) — Branchline sync and merge of approved snapshots across branch lines.
 
-- **Created:** 2026-07-11
-- **Modified:** 2026-07-11
+### Published properties
 
-## Authentication
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-- **Reads** (list/get on projects, builds, snapshots, and all Visual Git calls): per-project token in the Authorization header - `Authorization: Token token=<PROJECT_TOKEN>`.
-- **Writes** (approve/unapprove/reject a build, fail or delete a build, create or update a project): BrowserStack HTTP Basic auth using your BrowserStack username and access key.
+#### Agentic access (1)
 
-## APIs
+Which operations an agent can call, which act, and which need a human in the loop.
 
-### Percy Builds API
+- [Percy Agentic Access](https://apis.io/agentic-access/percy/percy-agentic-access/)
 
-A build logically groups the test sessions and snapshots produced by a single run. List recent builds (last 30 days) with filters for SHA, branch, and state; fetch a single build's details and summary; and drive review actions - approve, unapprove, or reject via the reviews endpoint, and manually fail or delete a build.
+#### Collections (5)
 
-- **Human URL:** [https://www.browserstack.com/docs/percy/api-reference/builds](https://www.browserstack.com/docs/percy/api-reference/builds)
-- **Base URL:** `https://percy.io/api/v1`
+Postman and Open Collection request collections.
 
-#### Tags
+- [Percy REST API](https://apis.io/collections/percy/open-percy/)
+- [Percy REST Builds API](https://apis.io/collections/percy/open-percy-builds-api/)
+- [Percy REST Builds Projects API](https://apis.io/collections/percy/open-percy-projects-api/)
+- [Percy REST Builds Snapshots API](https://apis.io/collections/percy/open-percy-snapshots-api/)
+- [Percy REST Builds Visual Git API](https://apis.io/collections/percy/open-percy-visual-git-api/)
 
-- Builds
-- Visual Testing
-- QA
+#### Security (1)
 
-#### Properties
+Authentication, trust centre, and vulnerability disclosure.
 
-- [Documentation](https://www.browserstack.com/docs/percy/api-reference/percy-apis)
-- [API Reference](https://www.browserstack.com/docs/percy/api-reference/builds)
-- [OpenAPI](openapi/percy-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/percy.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/percy.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Percy Authentication](https://apis.io/security/percy/percy-authentication/)
 
-### Percy Snapshots API
+#### Plans and pricing (1)
 
-Read the snapshots that make up a build. List snapshots for a given `build_id` with pagination and filters (review state reason, snapshot IDs, name search), and fetch a single snapshot's details including its review state and per-browser/width comparisons. Snapshots are created during a build by the Percy CLI/SDK, not through a public REST create endpoint; this API is the read/inspect surface for them.
+Published plans, tiers and prices.
 
-- **Human URL:** [https://www.browserstack.com/docs/percy/api-reference/snapshots](https://www.browserstack.com/docs/percy/api-reference/snapshots)
-- **Base URL:** `https://percy.io/api/v1`
+- [Percy Plans Pricing](https://apis.io/plans/percy/percy-plans-pricing/)
 
-#### Tags
+#### Rate limits (1)
 
-- Snapshots
-- Visual Regression
-- Screenshots
+Published request limits.
 
-#### Properties
+- [Percy Rate Limits](https://apis.io/rate-limits/percy/percy-rate-limits/)
 
-- [API Reference](https://www.browserstack.com/docs/percy/api-reference/snapshots)
-- [OpenAPI](openapi/percy-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/percy.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/percy.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### FinOps (1)
 
-### Percy Projects API
+What the API costs to run, by operation.
 
-A project logically groups builds. Retrieve the details of the project tied to a given project token, create a new web or app project programmatically, and update an existing project's settings - base branch, approval and branch filters, screenshot limits, intelli-ignore, and visibility.
+- [Percy Finops](https://apis.io/finops/percy/percy-finops/)
 
-- **Human URL:** [https://www.browserstack.com/docs/percy/api-reference/projects](https://www.browserstack.com/docs/percy/api-reference/projects)
-- **Base URL:** `https://percy.io/api/v1`
+## Where to find this API
 
-#### Tags
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-- Projects
-- Configuration
-- QA
-
-#### Properties
-
-- [API Reference](https://www.browserstack.com/docs/percy/api-reference/projects)
-- [OpenAPI](openapi/percy-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/percy.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/percy.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### Percy Visual Git API
-
-Visual Git (branchline) synchronizes approved snapshots across branch lines. Trigger a sync of a project's snapshots with a target branch filter, poll the status of a sync operation by `sync_id`, and merge approved snapshots from a feature branch into the master branchline.
-
-- **Human URL:** [https://www.browserstack.com/docs/percy/api-reference/visual-git](https://www.browserstack.com/docs/percy/api-reference/visual-git)
-- **Base URL:** `https://percy.io/api/v1`
-
-#### Tags
-
-- Visual Git
-- Branchline
-- Snapshots
-
-#### Properties
-
-- [API Reference](https://www.browserstack.com/docs/percy/api-reference/visual-git)
-- [OpenAPI](openapi/percy-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/percy.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/percy.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-## Common Properties
-
-- [Authentication](authentication/percy-authentication.yml)
-- [GitHub Organization](https://github.com/percy)
-- [LinkedIn](https://www.linkedin.com/company/browserstack)
 - [Website](https://percy.io)
 - [Documentation](https://www.browserstack.com/docs/percy)
-- [Plans](plans/percy-plans-pricing.yml)
-- [Rate Limits](rate-limits/percy-rate-limits.yml)
-- [Fin Ops](finops/percy-finops.yml)
 - [Blog](https://percy.io/blog)
+- [GitHub](https://github.com/percy)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 26.7** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.1 |
+| Contract quality | 51.1 |
+| Contract governance | 0.0 |
+| Operational transparency | 10.5 |
+| Developer ergonomics | 32.1 |
+| Access clarity | 7.9 |
+
+**Agent readiness 17.9** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 5.9** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/percy/](https://apis.io/providers/percy/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Percy: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/percy/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
